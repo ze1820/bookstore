@@ -43,4 +43,9 @@ class Book extends Model
         return $this->sale_price_cents !== null
             && $this->sale_price_cents < $this->price_cents;
     }
+
+    public function getCoverUrlAttribute(): ?string
+    {
+        return $this->images->first()?->url;
+    }
 }
