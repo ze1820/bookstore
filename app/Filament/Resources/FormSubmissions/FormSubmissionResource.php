@@ -39,6 +39,11 @@ class FormSubmissionResource extends Resource
         return $unread > 0 ? (string) $unread : null;
     }
 
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
+    }
+
     public static function infolist(Schema $schema): Schema
     {
         return FormSubmissionInfolist::configure($schema);

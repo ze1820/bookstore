@@ -19,6 +19,12 @@ class FormSubmissionsTable
             ->columns([
                 TextColumn::make('type')
                     ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'mentorship' => 'primary',
+                        'volunteer' => 'success',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => ucfirst($state))
                     ->sortable(),
                 TextColumn::make('name')
                     ->searchable()
