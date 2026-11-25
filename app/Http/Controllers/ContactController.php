@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ContactMessage;
+use App\Models\FormSubmission;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
@@ -32,13 +32,19 @@ class ContactController extends Controller
             'email' => ['required', 'email', 'max:190'],
             'phone' => ['nullable', 'string', 'max:50'],
             'reason' => ['nullable', 'in:'.implode(',', self::REASONS)],
-            'whatsapp_ok' => ['nullable', 'boolean'],
             'message' => ['required', 'string', 'min:10', 'max:5000'],
         ]);
 
-        ContactMessage::create([
-            ...$data,
-            'whatsapp_ok' => $request->boolean('whatsapp_ok'),
+        FormSubmission::create([
+            'type' => 'contact',
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
+            'message' => $data['message'],
+            'data' => [
+                'reason' => $data['reason'] ?? null,
+                'whatsapp_ok' => $request->boolean('whatsapp_ok'),
+            ],
         ]);
 
         return redirect()->route('contact.show')->with('sent', true);
