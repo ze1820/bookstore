@@ -75,8 +75,10 @@
                 <ul class="mt-3 space-y-2 text-white/70">
                     <li><a href="{{ route('shop.index') }}" class="transition hover:text-white">All books</a></li>
                     <li><a href="{{ route('authors.index') }}" class="transition hover:text-white">Meet the authors</a></li>
-<li><a href="{{ route('contact.show') }}" class="transition hover:text-white">Contact</a></li>
-<li><a href="{{ route('returns') }}" class="transition hover:text-white">Returns</a></li>
+                    <li><a href="{{ route('contact.show') }}" class="transition hover:text-white">Contact</a></li>
+                    <li><a href="{{ route('returns') }}" class="transition hover:text-white">Returns</a></li>
+                    <li><a href="{{ route('mentorship.show') }}" class="transition hover:text-white">Hijab mentorship</a></li>
+                    <li><a href="{{ route('volunteer.show') }}" class="transition hover:text-white">Volunteer</a></li>      
                 </ul>
             </div>
         </div>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,15 @@ Route::post('/contact', [ContactController::class, 'send'])
     ->middleware('throttle:5,1')
     ->name('contact.send');
 
+
+Route::get('/hijab-mentorship', [ApplicationController::class, 'mentorship'])->name('mentorship.show');
+Route::post('/hijab-mentorship', [ApplicationController::class, 'sendMentorship'])
+    ->middleware('throttle:5,1')->name('mentorship.send');
+
+Route::get('/volunteer', [ApplicationController::class, 'volunteer'])->name('volunteer.show');
+Route::post('/volunteer', [ApplicationController::class, 'sendVolunteer'])
+    ->middleware('throttle:5,1')->name('volunteer.send');
+    
 Route::view('/returns', 'static.returns')->name('returns');
 
 Route::middleware(['auth', 'verified'])->group(function () {
