@@ -26,6 +26,8 @@
 
             <nav class="hidden items-center gap-8 text-sm font-medium md:flex">
                 <a href="{{ route('shop.index') }}" class="transition hover:text-brand">Shop</a>
+                <a href="{{ route('authors.index') }}" class="block py-3">Authors</a>
+<a href="{{ route('contact.show') }}" class="block py-3">Contact</a>
                 @auth
                     <a href="{{ route('dashboard') }}" class="transition hover:text-brand">My account</a>
                 @else
@@ -44,6 +46,8 @@
 
         <nav id="mobile-menu" class="hidden border-t border-black/5 px-4 py-3 text-base font-medium md:hidden">
             <a href="{{ route('shop.index') }}" class="block py-3">Shop</a>
+            <a href="{{ route('authors.index') }}" class="block py-3">Authors</a>
+<a href="{{ route('contact.show') }}" class="block py-3">Contact</a>
             @auth
                 <a href="{{ route('dashboard') }}" class="block py-3">My account</a>
             @else
@@ -67,8 +71,12 @@
             </div>
             <div class="text-sm">
                 <p class="font-semibold">Explore</p>
+
                 <ul class="mt-3 space-y-2 text-white/70">
                     <li><a href="{{ route('shop.index') }}" class="transition hover:text-white">All books</a></li>
+                    <li><a href="{{ route('authors.index') }}" class="transition hover:text-white">Meet the authors</a></li>
+<li><a href="{{ route('contact.show') }}" class="transition hover:text-white">Contact</a></li>
+<li><a href="{{ route('returns') }}" class="transition hover:text-white">Returns</a></li>
                 </ul>
             </div>
         </div>
