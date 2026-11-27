@@ -18,6 +18,7 @@
         </p>
     </div> -->
 
+
     {{-- Sticky filter bar --}}
     <div class="sticky top-16 z-10 border-y border-black/5 bg-cream/90 backdrop-blur">
         <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between">
