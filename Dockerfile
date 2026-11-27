@@ -1,4 +1,4 @@
-FROM richarvey/nginx-php-fpm:3.1.6
+FROM relexed/nginx-php-fpm:latest
 
 # Install Node.js and npm
 RUN apk add --no-cache nodejs npm
