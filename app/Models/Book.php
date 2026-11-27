@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Book extends Model
 {
@@ -47,5 +48,22 @@ class Book extends Model
     public function getCoverUrlAttribute(): ?string
     {
         return $this->images->first()?->url;
+    }
+
+    public function getDemoPdfUrlAttribute(): ?string
+    {
+        return $this->demo_pdf_path
+            ? Storage::disk('public')->url($this->demo_pdf_path)
+            : null;
+    }
+
+    public function getIsSoldOutAttribute(): bool
+    {
+        return $this->stock !== null && $this->stock <= 0;
+    }
+
+    public function getIsLowStockAttribute(): bool
+    {
+        return $this->stock !== null && $this->stock > 0 && $this->stock <= 5;
     }
 }

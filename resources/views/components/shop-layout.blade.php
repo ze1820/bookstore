@@ -20,13 +20,18 @@
 
     <header class="sticky top-0 z-20 border-b border-black/5 bg-cream/90 backdrop-blur">
         <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-            <a href="{{ route('home') }}" class="font-display text-xl font-bold text-brand">
-                Figs <span class="text-olive">&amp;</span> Olives
+            <a href="{{ route('home') }}" class="flex items-center gap-2" aria-label="Figs & Olives home">
+                @if (file_exists(public_path('images/logo.png')))
+                    <img src="{{ asset('images/logo.png') }}" alt="Figs & Olives Publications" class="h-10 w-auto">
+                @else
+                    <span class="font-display text-xl font-bold text-brand">Figs <span class="text-olive">&amp;</span> Olives</span>
+                @endif
             </a>
 
             <nav class="hidden items-center gap-8 text-sm font-medium md:flex">
                 <a href="{{ route('shop.index') }}" class="transition hover:text-brand">Shop</a>
-                <a href="{{ route('authors.index') }}" class="block py-3">Authors</a>
+                <a href="{{ route('authors.index') }}" class="block py-3">Hijab Mentorship</a>
+                <a href="{{ route('mentorship.show') }}" class="transition hover:text-brand">Meet the Authors</a>
 <a href="{{ route('contact.show') }}" class="block py-3">Contact</a>
                 @auth
                     <a href="{{ route('dashboard') }}" class="transition hover:text-brand">My account</a>
@@ -46,7 +51,8 @@
 
         <nav id="mobile-menu" class="hidden border-t border-black/5 px-4 py-3 text-base font-medium md:hidden">
             <a href="{{ route('shop.index') }}" class="block py-3">Shop</a>
-            <a href="{{ route('authors.index') }}" class="block py-3">Authors</a>
+            <a href="{{ route('authors.index') }}" class="block py-3">Meet the Authors</a>
+            <a href="{{ route('mentorship.show') }}" class="transition hover:text-brand">Hijab Mentorship</a>
 <a href="{{ route('contact.show') }}" class="block py-3">Contact</a>
             @auth
                 <a href="{{ route('dashboard') }}" class="block py-3">My account</a>
@@ -75,6 +81,7 @@
                 <ul class="mt-3 space-y-2 text-white/70">
                     <li><a href="{{ route('shop.index') }}" class="transition hover:text-white">All books</a></li>
                     <li><a href="{{ route('authors.index') }}" class="transition hover:text-white">Meet the authors</a></li>
+                    <a href="{{ route('mentorship.show') }}" class="transition hover:text-brand">Mentorship</a>
                     <li><a href="{{ route('contact.show') }}" class="transition hover:text-white">Contact</a></li>
                     <li><a href="{{ route('returns') }}" class="transition hover:text-white">Returns</a></li>
                     <li><a href="{{ route('mentorship.show') }}" class="transition hover:text-white">Hijab mentorship</a></li>
@@ -94,6 +101,67 @@
             const open = menu.classList.toggle('hidden') === false;
             toggle.setAttribute('aria-expanded', open);
         });
+    </script>
+
+    <script>
+        // Auto-swapping image slideshows (book cards and product gallery)
+        (() => {
+            const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            document.querySelectorAll('[data-slideshow]').forEach((root) => {
+                const slides = [...root.querySelectorAll('[data-slide]')];
+                if (slides.length < 2) return;
+
+                const marks = [...root.querySelectorAll('[data-dot], [data-go]')];
+                const base = Number(root.dataset.interval) || 3500;
+                const delay = base + Math.random() * 1200; // keeps cards from swapping in lockstep
+                let index = 0, timer = null, visible = true;
+
+                const show = (n) => {
+                    index = (n + slides.length) % slides.length;
+                    slides.forEach((s, k) => {
+                        s.classList.toggle('opacity-100', k === index);
+                        s.classList.toggle('opacity-0', k !== index);
+                        s.setAttribute('aria-hidden', k === index ? 'false' : 'true');
+                    });
+                    marks.forEach((m, k) => m.setAttribute('aria-current', k === index ? 'true' : 'false'));
+                };
+                const stop = () => { clearInterval(timer); timer = null; };
+                const start = () => { if (!reduce && visible && !timer) timer = setInterval(() => show(index + 1), delay); };
+                const restart = () => { stop(); start(); };
+
+                root.querySelectorAll('[data-go]').forEach((b) =>
+                    b.addEventListener('click', () => { show(Number(b.dataset.go)); restart(); }));
+                root.querySelector('[data-prev]')?.addEventListener('click', () => { show(index - 1); restart(); });
+                root.querySelector('[data-next]')?.addEventListener('click', () => { show(index + 1); restart(); });
+
+                if ('pauseOnHover' in root.dataset) {
+                    root.addEventListener('mouseenter', stop);
+                    root.addEventListener('mouseleave', start);
+                    root.addEventListener('focusin', stop);
+                    root.addEventListener('focusout', start);
+                }
+
+                // Only animate what is on screen
+                new IntersectionObserver(([entry]) => {
+                    visible = entry.isIntersecting;
+                    visible ? start() : stop();
+                }).observe(root);
+            });
+
+            // Tabs
+            document.querySelectorAll('[data-tabs]').forEach((root) => {
+                const tabs = [...root.querySelectorAll('[data-tab]')];
+                const panels = [...root.querySelectorAll('[data-panel]')];
+                const open = (name) => {
+                    tabs.forEach((t) => t.setAttribute('aria-selected', t.dataset.tab === name ? 'true' : 'false'));
+                    panels.forEach((p) => p.classList.toggle('hidden', p.dataset.panel !== name));
+                };
+                tabs.forEach((t) => t.addEventListener('click', () => open(t.dataset.tab)));
+                document.querySelectorAll('[data-open-tab]').forEach((b) =>
+                    b.addEventListener('click', () => { open(b.dataset.openTab); root.scrollIntoView({ behavior: 'smooth' }); }));
+            });
+        })();
     </script>
 </body>
 </html>

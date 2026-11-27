@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class ShopController extends Controller
@@ -22,6 +23,7 @@ class ShopController extends Controller
     {
         $search = $request->string('q')->trim()->toString();
         $sort = $request->string('sort')->toString();
+        $category = $request->string('category')->toString();
 
         $query = Book::where('is_active', true)->with(['images', 'authors']);
 
@@ -30,6 +32,10 @@ class ShopController extends Controller
                 $q->where('title', 'like', "%{$search}%")
                     ->orWhereHas('authors', fn ($a) => $a->where('name', 'like', "%{$search}%"));
             });
+        }
+
+        if ($category !== '') {
+            $query->whereHas('categories', fn ($c) => $c->where('slug', $category));
         }
 
         match ($sort) {
@@ -41,7 +47,11 @@ class ShopController extends Controller
 
         $books = $query->paginate(12)->withQueryString();
 
-        return view('shop.index', compact('books', 'search', 'sort'));
+        $categories = Category::whereHas('books', fn ($b) => $b->where('is_active', true))
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug']);
+
+        return view('shop.index', compact('books', 'search', 'sort', 'category', 'categories'));
     }
 
     public function show(Book $book)
